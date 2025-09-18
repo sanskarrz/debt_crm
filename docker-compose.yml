@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: debt_recovery_crm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  asterisk:
+    image: andrius/asterisk:18-current
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "10000-20000:10000-20000/udp"
+      - "8088:8088"
+    volumes:
+      - ./asterisk/config:/etc/asterisk
+      - ./asterisk/sounds:/var/lib/asterisk/sounds
+    environment:
+      - ASTERISK_UID=1000
+      - ASTERISK_GID=1000
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/debt_recovery_crm
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-jwt-secret-key
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./.env:/app/.env
+  dialer:
+    build: ./dialer
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/debt_recovery_crm
+      - REDIS_URL=redis://redis:6379
+      - ASTERISK_URL=http://asterisk:8088
+      - ASTERISK_USER=admin
+      - ASTERISK_PASSWORD=admin
+    depends_on:
+      - postgres
+      - redis
+      - asterisk
+    volumes:
+      - ./dialer:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3001
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,59 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Custom for Visual Studio
+*.cs     diff=csharp
+
+# Standard to msysgit
+*.doc	diff=astextplain
+*.DOC	diff=astextplain
+*.docx	diff=astextplain
+*.DOCX	diff=astextplain
+*.dot 	diff=astextplain
+*.DOT 	diff=astextplain
+*.pdf	diff=astextplain
+*.PDF	diff=astextplain
+*.rtf	diff=astextplain
+*.RTF	diff=astextplain
+
+# Mark these files as binary
+*.png diff
+*.jpg diff
+*.jpeg diff
+*.gif diff
+*.ico diff
+*.mov diff
+*.mp4 diff
+*.mp3 diff
+*.flv diff
+*.fla diff
+*.swf diff
+*.gz diff
+*.zip diff
+*.7z diff
+*.ttf diff
+*.eot diff
+*.woff diff
+*.pyc diff
+*.pdf diff
+*.ai diff
+*.psd diff
+*.xcf diff
+
+# Set default behavior to automatically normalize line endings
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.less text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+

@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: debt-recovery-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        fromDatabase:
+          name: debt-recovery-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: debt-recovery-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+        
+databases:
+  - name: debt-recovery-db
+    databaseName: debt_recovery_crm
+    user: postgres
+    plan: free
+
+services:
+  - type: redis
+    name: debt-recovery-redis
+    plan: free
